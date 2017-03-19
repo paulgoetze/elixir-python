@@ -1,0 +1,4 @@
+# Python requirements
+
+tqdm==4.10.0
+whoosh==2.7.4

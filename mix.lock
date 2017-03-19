@@ -1,0 +1,4 @@
+%{"erlport": {:hex, :erlport, "0.9.8", "b7dc57eb87f215a671926bfbcd23e6e9c76f8653b0d072627b41431ef51c4d20", [:rebar3], []},
+  "export": {:hex, :export, "0.1.0", "1d1870f54996a88d067c927c7e00bca42d9e84775b4e3c75952ed351ad950551", [:mix], [{:erlport, "~> 0.9", [hex: :erlport, optional: false]}]},
+  "iconv": {:hex, :iconv, "1.0.3", "f5c159f7e0ad2a3b55c6b5528ce71d7926f206df2f9bf83201a77cf1bc91c6f0", [:rebar3], [{:p1_utils, "1.0.6", [hex: :p1_utils, optional: false]}]},
+  "p1_utils": {:hex, :p1_utils, "1.0.6", "ef0951ddf38e92b7e479af4b8dc950df76af8c1030432ef68b7fd7ad17c436fe", [:rebar3], []}}
