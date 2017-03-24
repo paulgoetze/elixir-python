@@ -6,14 +6,13 @@ import os
 import csv
 import unicodedata
 import shutil
-from operator import itemgetter
 
 from tqdm import tqdm
 from whoosh.index import create_in, open_dir
-from whoosh.fields import SchemaClass, TEXT, STORED
-from whoosh.qparser import QueryParser, FuzzyTermPlugin
-from whoosh.query import Prefix
+from whoosh.fields import SchemaClass, TEXT
 from whoosh.analysis import NgramWordAnalyzer
+from whoosh.qparser import QueryParser
+from whoosh.query import Prefix
 
 
 DATA_BASE_DIR = 'data'
@@ -56,10 +55,7 @@ def create_index():
 
     path = index_path(CITY_INDEX)
 
-    if os.path.exists(path):
-        shutil.rmtree(path)
-
-    os.makedirs(path)
+    _recreate_path(path)
 
     index = create_in(path, CitySchema)
     writer = index.writer()
@@ -68,29 +64,44 @@ def create_index():
         reader = csv.DictReader(csv_file)
 
         for row in tqdm(reader, desc='Creating city index'):
-            city = row.get('city_name')
+            _add_document(row, writer)
 
-            if city:
-                state = row.get('subdivision_1_name')
-                country = row.get('country_name')
-                content = _cleanup_text(' '.join([city, state, country]))
+    print('Committing data...', end='')
+    writer.commit()
+    print('done')
 
-                writer.add_document(
-                    city=city,
-                    state=state,
-                    country=country,
-                    content=content
-                )
 
-        print('Committing data...', end='')
-        writer.commit()
-        print('done')
+def _recreate_path(path):
+    """ Deletes and recreates the given path """
 
-    return True
+    if os.path.exists(path):
+        shutil.rmtree(path)
+
+    os.makedirs(path)
+
+
+def _add_document(row, writer):
+    """ Writes the data to the index """
+
+    city = row.get('city_name')
+
+    if not city:
+        return
+
+    state = row.get('subdivision_1_name')
+    country = row.get('country_name')
+    content = _cleanup_text(' '.join([city, state, country]))
+
+    writer.add_document(
+        city=city,
+        state=state,
+        country=country,
+        content=content
+    )
 
 
 def search(query='', count=10):
-    """ Searches for the given city """
+    """ Searches for the given query and returns `count` results """
 
     index = open_dir(index_path(CITY_INDEX))
 

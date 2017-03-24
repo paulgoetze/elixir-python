@@ -6,7 +6,7 @@ defmodule ElixirPython.GeoLite2 do
   @doc """
   Creates search index from raw csv data
   """
-  def create_index() do
+  def create_index do
     python_call(@python_module, "create_index")
   end
 
